@@ -1,16 +1,16 @@
 package com.leedostudios.meta
 {
     /**
-     * Class for creating other classes and executing metadata
+     * Class for interpreting Metadata
      */
     public interface IMeta
     {
         /**
-         * Preprocesses the class and returns the instance
+         * Preprocesses the class instance
          *
-         * @param value the class to instantiate, parse,
+         * @param value the object to parse,
          * and execute any metadata available in the class
-         * @return the created class
+         * @return the processed object
          */
         function process(value:Object):*;
 
