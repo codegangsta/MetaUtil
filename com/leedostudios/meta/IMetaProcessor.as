@@ -20,8 +20,8 @@ package com.leedostudios.meta
          * processor can get a reference of the creator that uses it if need
          * be
          *
-         * @param creator
+         * @param meta
          */
-        function onAdd(creator:IMeta):void;
+        function onAdd(meta:IMeta):void;
     }
 }

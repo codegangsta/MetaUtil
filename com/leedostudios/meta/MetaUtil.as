@@ -4,19 +4,22 @@ package com.leedostudios.meta
     import flash.utils.describeType;
     import flash.utils.getDefinitionByName;
 
-    public class Meta implements IMeta
+    public class MetaUtil implements IMeta
     {
         //_____________________________________________________________________
         //	ICreator Implementation
         //_____________________________________________________________________
         public function process(value:Object):*
         {
+            // get the constructor
+            var ctor:Class = getConstructor(value);
+
             // do a describe type if it is not in the cache
-            if (!definitionCache[value])
-                definitionCache[value] = describe(value);
+            if (!definitionCache[ctor])
+                definitionCache[ctor] = describe(ctor);
 
             // loop over all of
-            var target:MetaTarget = definitionCache[value];
+            var target:MetaTarget = definitionCache[ctor];
 
             for (var i:int = 0; i < _source.length; i++)
             {
@@ -29,7 +32,6 @@ package com.leedostudios.meta
                     if(arguments)
                         namedProcessor.processor.execute(value,prop,propType,arguments);
                 }
-
             }
 
             return value;
@@ -74,7 +76,7 @@ package com.leedostudios.meta
         //_____________________________________________________________________
         //	Constructor
         //_____________________________________________________________________
-        public function Meta()
+        public function MetaUtil()
         {
             _source = [];
         }
@@ -96,6 +98,8 @@ package com.leedostudios.meta
         {
             var target:MetaTarget = new MetaTarget();
             target.definition = describeType(value);
+
+            trace(target.definition);
 
             // we only want to parse these out once per class
             for each (var node:XML in target.definition.factory.*.(name() == 'variable' || name() == 'accessor'))

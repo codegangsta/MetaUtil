@@ -1,6 +1,6 @@
 package
 {
-    import com.leedostudios.meta.Meta;
+    import com.leedostudios.meta.MetaUtil;
 
     import com.leedostudios.meta.processors.CreateProcessor;
 
@@ -15,10 +15,11 @@ package
     {
         public function CreationExample()
         {
-            var m:Meta = new Meta();
+            var m:MetaUtil = new MetaUtil();
             m.addProcessor("Create",new CreateProcessor());
 
-            m.process(new TestClass());
+            var t:TestClass = new TestClass();
+            m.process(t);
         }
     }
 }

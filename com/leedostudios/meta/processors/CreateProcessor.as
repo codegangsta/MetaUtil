@@ -7,7 +7,7 @@ package com.leedostudios.meta.processors
 
 
     /**
-     * The create processor will run a create call on the creator
+     * The create processor will run a create call on the meta property
      */
     public class CreateProcessor implements IMetaProcessor
     {
@@ -17,22 +17,30 @@ package com.leedostudios.meta.processors
         public function execute(target:Object, property:String, propertyType:Class, arguments:Object):void
         {
             var instance:Object;
+
             if(arguments["asClass"])
-                instance = _creator.process(getDefinitionByName(arguments["asClass"]) as Class);
+            {
+                var clazz:Class = getDefinitionByName(arguments["asClass"]) as Class;
+                instance = new clazz();
+            }
             else
-                instance = _creator.process(propertyType);
+            {
+                instance = new propertyType();
+            }
+            
+            _meta.process(instance);
 
             target[property] = instance;
         }
 
-        public function onAdd(creator:IMeta):void
+        public function onAdd(meta:IMeta):void
         {
-            _creator = creator;
+            _meta = meta;
         }
 
         //_____________________________________________________________________
         //	Protected Properties
         //_____________________________________________________________________
-        protected var _creator:IMeta;
+        protected var _meta:IMeta;
     }
 }
