@@ -1,19 +1,11 @@
 package
 {
+    import flash.display.DisplayObject;
+
     public class TestClass
     {
-        [Inject]
-        [Create]
-        [Instantiate]
-        public var test:Object;
-        [Inject]
-        [Add(to="test")]
-        public var test2:Object;
-        [Inject]
-        public var test3:Object;
-
-        [HelloWorld]
-        public var test4:Object;
+        [Create(asClass="flash.display.Sprite")]
+        public var test4:DisplayObject;
 
         public function TestClass()
         {

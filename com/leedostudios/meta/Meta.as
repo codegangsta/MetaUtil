@@ -1,33 +1,22 @@
-package com.leedostudios.metadata
+package com.leedostudios.meta
 {
     import flash.utils.Dictionary;
     import flash.utils.describeType;
+    import flash.utils.getDefinitionByName;
 
-    public class Creator implements ICreator
+    public class Meta implements IMeta
     {
-        //_____________________________________________________________________
-        //	Static
-        //_____________________________________________________________________
-        /**
-         * Simple singleton for convenience
-         */
-        public static const instance:Creator = new Creator();
-
         //_____________________________________________________________________
         //	ICreator Implementation
         //_____________________________________________________________________
-        public function create(clazz:Class):*
+        public function process(value:Object):*
         {
-            // instantiate the class
-            // todo: support construtor arguments
-            var instance:* = new clazz();
-
             // do a describe type if it is not in the cache
-            if (!definitionCache[clazz])
-                definitionCache[clazz] = describe(clazz);
+            if (!definitionCache[value])
+                definitionCache[value] = describe(value);
 
             // loop over all of
-            var target:MetaTarget = definitionCache[clazz];
+            var target:MetaTarget = definitionCache[value];
 
             for (var i:int = 0; i < _source.length; i++)
             {
@@ -35,14 +24,15 @@ package com.leedostudios.metadata
 
                 for(var prop:String in target.properties)
                 {
-                    var arguments:Object = target.properties[prop][namedProcessor.name];
+                    var arguments:Object = target.properties[prop].tags[namedProcessor.name];
+                    var propType:Class = target.properties[prop].type;
                     if(arguments)
-                        namedProcessor.processor.execute(instance,prop,arguments);
+                        namedProcessor.processor.execute(value,prop,propType,arguments);
                 }
 
             }
 
-            return instance;
+            return value;
         }
 
         public function addProcessor(name:String, value:IMetaProcessor):void
@@ -50,6 +40,9 @@ package com.leedostudios.metadata
             var p:NamedProcessor = new NamedProcessor();
             p.name = name;
             p.processor = value;
+
+            //call onadd
+            value.onAdd(this);
             
             _source.push(p);
         }
@@ -59,6 +52,9 @@ package com.leedostudios.metadata
             var p:NamedProcessor = new NamedProcessor();
             p.name = name;
             p.processor = value;
+
+            //call onadd
+            value.onAdd(this);
 
             _source.splice(index, 0, p);
         }
@@ -78,7 +74,7 @@ package com.leedostudios.metadata
         //_____________________________________________________________________
         //	Constructor
         //_____________________________________________________________________
-        public function Creator()
+        public function Meta()
         {
             _source = [];
         }
@@ -105,9 +101,7 @@ package com.leedostudios.metadata
             for each (var node:XML in target.definition.factory.*.(name() == 'variable' || name() == 'accessor'))
             {
                 var metatags:Dictionary = new Dictionary();
-                target.properties[node.@name.toString()] = metatags;
-
-                trace(node.@name);
+                target.properties[node.@name.toString()] = {tags:metatags, type:getDefinitionByName(node.@type)};
 
                 for each(var tag:XML in node.elements("metadata"))
                 {
@@ -124,7 +118,7 @@ package com.leedostudios.metadata
     }
 }
 
-import com.leedostudios.metadata.IMetaProcessor;
+import com.leedostudios.meta.IMetaProcessor;
 
 import flash.utils.Dictionary;
 

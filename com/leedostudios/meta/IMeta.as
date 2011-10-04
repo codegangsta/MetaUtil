@@ -1,18 +1,18 @@
-package com.leedostudios.metadata
+package com.leedostudios.meta
 {
     /**
      * Class for creating other classes and executing metadata
      */
-    public interface ICreator
+    public interface IMeta
     {
         /**
-         * Instantiates and preprocesses the class and returns the instance
+         * Preprocesses the class and returns the instance
          *
-         * @param clazz the class to instantiate, parse,
+         * @param value the class to instantiate, parse,
          * and execute any metadata available in the class
          * @return the created class
          */
-        function create(clazz:Class):*;
+        function process(value:Object):*;
 
         /**
          * Add a IMetaProcessor to the end of the processor list

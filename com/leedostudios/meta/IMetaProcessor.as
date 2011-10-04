@@ -1,4 +1,4 @@
-package com.leedostudios.metadata
+package com.leedostudios.meta
 {
     /**
      * IMetaProcessor will process a metadata tag
@@ -13,6 +13,15 @@ package com.leedostudios.metadata
          * @param property the property on the object which the metadata is placed
          * @param arguments the arguments object inside the metadata tag
          */
-        function execute(target:Object,property:String,arguments:Object):void
+        function execute(target:Object, property:String, propertyType:Class, arguments:Object):void
+
+        /**
+         * Called when the Processor is added to the creator, this is so the
+         * processor can get a reference of the creator that uses it if need
+         * be
+         *
+         * @param creator
+         */
+        function onAdd(creator:IMeta):void;
     }
 }
