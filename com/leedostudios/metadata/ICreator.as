@@ -18,7 +18,7 @@ package com.leedostudios.metadata
          * Add a IMetaProcessor to the end of the processor list
          * @param value
          */
-        function addProcessor(value:IMetaProcessor):void;
+        function addProcessor(name:String, value:IMetaProcessor):void;
 
         /**
          * Adds a processor to the specified index
@@ -26,7 +26,7 @@ package com.leedostudios.metadata
          * @param value
          * @param index
          */
-        function addProcessorAt(value:IMetaProcessor,index:int):void;
+        function addProcessorAt(name:String, value:IMetaProcessor,index:int):void;
 
         /**
          * Gets a processor at the specified index

@@ -1,5 +1,6 @@
 package
 {
+    import com.leedostudios.metadata.addProcessor;
     import com.leedostudios.metadata.create;
 
     import flash.display.Sprite;
@@ -13,7 +14,9 @@ package
     {
         public function CreationExample()
         {
-            var testClassInstance:TestClass = create(TestClass);
+            addProcessor("HelloWorld",new HelloWorldProcessor());
+
+            create(TestClass);
         }
     }
 }

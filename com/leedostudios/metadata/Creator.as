@@ -6,37 +6,68 @@ package com.leedostudios.metadata
     public class Creator implements ICreator
     {
         //_____________________________________________________________________
+        //	Static
+        //_____________________________________________________________________
+        /**
+         * Simple singleton for convenience
+         */
+        public static const instance:Creator = new Creator();
+
+        //_____________________________________________________________________
         //	ICreator Implementation
         //_____________________________________________________________________
         public function create(clazz:Class):*
         {
             // instantiate the class
             // todo: support construtor arguments
-            var instance = new clazz();
+            var instance:* = new clazz();
 
             // do a describe type if it is not in the cache
             if (!definitionCache[clazz])
                 definitionCache[clazz] = describe(clazz);
 
             // loop over all of
-            var definition:MetaTarget = definitionCache[clazz];
+            var target:MetaTarget = definitionCache[clazz];
+
+            for (var i:int = 0; i < _source.length; i++)
+            {
+                var namedProcessor:NamedProcessor = _source[i];
+
+                for(var prop:String in target.properties)
+                {
+                    var arguments:Object = target.properties[prop][namedProcessor.name];
+                    if(arguments)
+                        namedProcessor.processor.execute(instance,prop,arguments);
+                }
+
+            }
 
             return instance;
         }
 
-        public function addProcessor(value:IMetaProcessor):void
+        public function addProcessor(name:String, value:IMetaProcessor):void
         {
-            _source.push(value);
+            var p:NamedProcessor = new NamedProcessor();
+            p.name = name;
+            p.processor = value;
+            
+            _source.push(p);
         }
 
-        public function addProcessorAt(value:IMetaProcessor, index:int):void
+        public function addProcessorAt(name:String, value:IMetaProcessor, index:int):void
         {
-            _source.splice(index, 0, value);
+            var p:NamedProcessor = new NamedProcessor();
+            p.name = name;
+            p.processor = value;
+
+            _source.splice(index, 0, p);
         }
 
         public function getProcessorAt(index:int):IMetaProcessor
         {
-            return _source[index];
+            var p:NamedProcessor = _source[index];
+            if(p) return p.processor;
+            else return null;
         }
 
         public function removeProcessorAt(index:int):IMetaProcessor
@@ -80,7 +111,7 @@ package com.leedostudios.metadata
 
                 for each(var tag:XML in node.elements("metadata"))
                 {
-                    var args:Object = new Object();
+                    var args:Object = {};
                     metatags[tag.@name.toString()] = args;
                     for each(var arg:XML in tag.elements("arg"))
                     {
@@ -88,12 +119,12 @@ package com.leedostudios.metadata
                     }
                 }
             }
-
             return target;
         }
-
     }
 }
+
+import com.leedostudios.metadata.IMetaProcessor;
 
 import flash.utils.Dictionary;
 
@@ -109,4 +140,17 @@ internal class MetaTarget
      * Definition cache
      */
     public var definition:XML;
+}
+
+internal class NamedProcessor
+{
+    /**
+     * The processor that the metadata tag represents
+     */
+    public var processor:IMetaProcessor;
+
+    /**
+     * Name of the metadata tag
+     */
+    public var name:String;
 }

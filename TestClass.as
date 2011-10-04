@@ -12,6 +12,7 @@ package
         [Inject]
         public var test3:Object;
 
+        [HelloWorld]
         public var test4:Object;
 
         public function TestClass()
